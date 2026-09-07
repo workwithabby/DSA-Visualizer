@@ -252,7 +252,11 @@ export function TrieVisualizer({ topicSlug }: TrieVisualizerProps) {
         </div>
 
         <div className="flex justify-center overflow-x-auto">
-          <svg viewBox={`0 0 ${width} ${height}`} className="min-w-[400px]">
+          <svg
+            viewBox={`0 0 ${width} ${height}`}
+            className="w-full max-w-[640px] h-auto max-h-[460px]"
+            preserveAspectRatio="xMidYMid meet"
+          >
             {edges.map((edge, i) => {
               const from = nodes.find((n) => n.id === edge.from)!;
               const to = nodes.find((n) => n.id === edge.to)!;

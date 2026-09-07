@@ -387,7 +387,11 @@ export function TreeVisualizer({ mode, topicSlug }: TreeVisualizerProps) {
         </div>
 
         <div className="flex justify-center overflow-x-auto">
-          <svg viewBox={`0 0 ${layout.width} ${layout.height}`} className="min-w-[400px]">
+          <svg
+            viewBox={`0 0 ${layout.width} ${layout.height}`}
+            className="w-full max-w-[640px] h-auto max-h-[460px]"
+            preserveAspectRatio="xMidYMid meet"
+          >
             {/* Edges */}
             {Object.entries(nodes).map(([idStr, node]) => {
               const id = Number(idStr);

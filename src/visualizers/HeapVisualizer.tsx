@@ -173,7 +173,11 @@ export function HeapVisualizer({ maxHeap = true, topicSlug }: HeapVisualizerProp
         </div>
 
         <div className="flex justify-center overflow-x-auto">
-          <svg viewBox={`${viewMinX} 0 ${width} ${height}`} className="min-w-[400px]">
+          <svg
+            viewBox={`${viewMinX} 0 ${width} ${height}`}
+            className="w-full max-w-[640px] h-auto max-h-[460px]"
+            preserveAspectRatio="xMidYMid meet"
+          >
             {heap.map((_, i) => {
               const [l, r] = childIndices(i);
               const pos = positions[i];
