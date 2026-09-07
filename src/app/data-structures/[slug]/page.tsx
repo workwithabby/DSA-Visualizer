@@ -5,6 +5,10 @@ import { dataStructures } from "@/lib/data";
 import { DataStructure } from "@/lib/types";
 import { ComplexityCard } from "@/components/ComplexityCard";
 import { GenericStructureVisualizer } from "@/visualizers/GenericStructureVisualizer";
+import { TreeVisualizer } from "@/visualizers/TreeVisualizer";
+import { HeapVisualizer } from "@/visualizers/HeapVisualizer";
+import { GraphStructureVisualizer } from "@/visualizers/GraphStructureVisualizer";
+import { TrieVisualizer } from "@/visualizers/TrieVisualizer";
 import { ProgressVisit } from "@/components/ProgressVisit";
 
 const difficultyClass: Record<string, string> = {
@@ -31,12 +35,34 @@ function renderVisualizer(slug: string) {
       return <GenericStructureVisualizer structure="deque" topicSlug={slug} />;
     case "hash-table":
       return <GenericStructureVisualizer structure="hash-table" topicSlug={slug} />;
+    case "binary-tree":
+      return <TreeVisualizer mode="binary-tree" topicSlug={slug} />;
+    case "binary-search-tree":
+      return <TreeVisualizer mode="binary-search-tree" topicSlug={slug} />;
+    case "heap":
+      return <HeapVisualizer maxHeap topicSlug={slug} />;
+    case "graph":
+      return <GraphStructureVisualizer topicSlug={slug} />;
+    case "trie":
+      return <TrieVisualizer topicSlug={slug} />;
     default:
       return null;
   }
 }
 
-const VISUALIZABLE = ["array", "linked-list", "stack", "queue", "deque", "hash-table"];
+const VISUALIZABLE = [
+  "array",
+  "linked-list",
+  "stack",
+  "queue",
+  "deque",
+  "hash-table",
+  "binary-tree",
+  "binary-search-tree",
+  "heap",
+  "graph",
+  "trie",
+];
 
 export default async function DataStructureDetailPage({
   params,
@@ -155,17 +181,6 @@ export default async function DataStructureDetailPage({
               { label: "Delete", value: dsData.timeComplexity.delete },
             ]}
           />
-          {(["array", "linked-list", "stack", "queue", "deque"].includes(slug)) && (
-            <ComplexityCard
-              title="Operation Complexities"
-              rows={[
-                { label: "Access", value: dsData.timeComplexity.access },
-                { label: "Search", value: dsData.timeComplexity.search },
-                { label: "Insert", value: dsData.timeComplexity.insert },
-                { label: "Delete", value: dsData.timeComplexity.delete },
-              ]}
-            />
-          )}
         </div>
       </section>
 

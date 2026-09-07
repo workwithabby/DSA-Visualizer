@@ -16,9 +16,12 @@ interface GenericStructureVisualizerProps {
 export function GenericStructureVisualizer({ structure, topicSlug }: GenericStructureVisualizerProps) {
   const [items, setItems] = useState<(number | null)[]>(Array(8).fill(null).map((_, i) => (i + 1) * 10));
   const [inputValue, setInputValue] = useState("");
+  const [inputKey, setInputKey] = useState("");
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [lastOperation, setLastOperation] = useState("");
   const [hashMap, setHashMap] = useState<Record<string, number>>({ "apple": 10, "banana": 20, "cherry": 30 });
+  const [dequeMode, setDequeMode] = useState<"back" | "front">("back");
+  const [hashDeleteKey, setHashDeleteKey] = useState("");
 
   const { soundEnabled } = useSoundContext();
   const { markStarted, markCompleted } = useProgress();
@@ -44,7 +47,7 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
     if (isNaN(val)) return;
 
     if (structure === "hash-table") {
-      const key = `key${Object.keys(hashMap).length + 1}`;
+      const key = inputKey.trim() || `key${Object.keys(hashMap).length + 1}`;
       setHashMap((prev) => ({ ...prev, [key]: val }));
       setLastOperation(`Inserted key "${key}" with value ${val}`);
       playSound(sounds.insert);
@@ -64,38 +67,46 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
       setLastOperation(`Enqueued ${val} at the back`);
       playSound(sounds.insert);
     } else if (structure === "deque") {
-      setItems((prev) => [...prev, val]);
-      setSelectedIndex(items.length);
-      setLastOperation(`Added ${val} to the back`);
+      if (dequeMode === "front") {
+        setItems((prev) => [val, ...prev]);
+        setSelectedIndex(0);
+        setLastOperation(`Added ${val} to the front`);
+      } else {
+        setItems((prev) => [...prev, val]);
+        setSelectedIndex(items.length);
+        setLastOperation(`Added ${val} to the back`);
+      }
       playSound(sounds.insert);
     } else if (structure === "stack") {
       setItems((prev) => [...prev, val]);
       setSelectedIndex(items.length);
       setLastOperation(`Pushed ${val} onto the stack`);
       playSound(sounds.insert);
-    } else {
-      setItems((prev) => [...prev, val]);
-      setSelectedIndex(items.length);
-      setLastOperation(`Inserted ${val}`);
+    } else if (structure === "linked-list") {
+      setItems((prev) => [val, ...prev]);
+      setSelectedIndex(0);
+      setLastOperation(`Inserted ${val} at head`);
       playSound(sounds.insert);
     }
     usedInsert.current = true;
     if (topicSlug) markStarted(topicSlug);
     maybeComplete();
     setInputValue("");
+    setInputKey("");
   };
 
   const handleDelete = () => {
     if (structure === "hash-table") {
       const keys = Object.keys(hashMap);
       if (keys.length === 0) return;
-      const lastKey = keys[keys.length - 1];
+      const keyToDelete = hashDeleteKey.trim();
+      const targetKey = keyToDelete && hashMap[keyToDelete] !== undefined ? keyToDelete : keys[keys.length - 1];
       const rest: Record<string, number> = {};
       Object.keys(hashMap).forEach((k) => {
-        if (k !== lastKey) rest[k] = hashMap[k];
+        if (k !== targetKey) rest[k] = hashMap[k];
       });
       setHashMap(rest);
-      setLastOperation(`Deleted key "${lastKey}"`);
+      setLastOperation(`Deleted key "${targetKey}" (value: ${hashMap[targetKey]})`);
       playSound(sounds.delete);
     } else if (structure === "queue") {
       if (items.length === 0) return;
@@ -105,15 +116,27 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
       playSound(sounds.delete);
     } else if (structure === "deque") {
       if (items.length === 0) return;
-      const removed = items[0];
-      setItems((prev) => prev.slice(1));
-      setLastOperation(`Removed ${removed} from the front`);
+      if (dequeMode === "front") {
+        const removed = items[0];
+        setItems((prev) => prev.slice(1));
+        setLastOperation(`Removed ${removed} from the front`);
+      } else {
+        const removed = items[items.length - 1];
+        setItems((prev) => prev.slice(0, -1));
+        setLastOperation(`Removed ${removed} from the back`);
+      }
       playSound(sounds.delete);
     } else if (structure === "stack") {
       if (items.length === 0) return;
       const removed = items[items.length - 1];
       setItems((prev) => prev.slice(0, -1));
       setLastOperation(`Popped ${removed} from the stack`);
+      playSound(sounds.delete);
+    } else if (structure === "linked-list") {
+      if (items.length === 0) return;
+      const removed = items[items.length - 1];
+      setItems((prev) => prev.slice(0, -1));
+      setLastOperation(`Removed ${removed} from tail`);
       playSound(sounds.delete);
     } else {
       if (items.length === 0) return;
@@ -148,10 +171,10 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
 
   const operationLabels = {
     array: { insert: "Insert", delete: "Delete" },
-    "linked-list": { insert: "Insert", delete: "Delete" },
+    "linked-list": { insert: "Insert Head", delete: "Delete Tail" },
     stack: { insert: "Push", delete: "Pop" },
     queue: { insert: "Enqueue", delete: "Dequeue" },
-    deque: { insert: "Add Back", delete: "Remove Front" },
+    deque: { insert: `Add ${dequeMode === "front" ? "Front" : "Back"}`, delete: `Remove ${dequeMode === "front" ? "Front" : "Back"}` },
     "hash-table": { insert: "Insert", delete: "Delete" },
   };
 
@@ -283,6 +306,16 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
 
       <div className="card p-6">
         <div className="flex flex-wrap gap-3 items-center">
+          {structure === "hash-table" && (
+            <input
+              type="text"
+              value={inputKey}
+              onChange={(e) => setInputKey(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleInsert()}
+              placeholder="Key (optional)..."
+              className="px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-gray-600 bg-transparent font-mono text-sm focus:border-primary outline-none w-32"
+            />
+          )}
           <input
             type="text"
             value={inputValue}
@@ -294,6 +327,15 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
           <button onClick={handleInsert} className="px-4 py-2 bg-primary-fill text-white rounded-lg text-sm font-semibold hover:bg-primary-dark active:scale-95 transition-all">
             {opLabels.insert}
           </button>
+          {structure === "hash-table" && (
+            <input
+              type="text"
+              value={hashDeleteKey}
+              onChange={(e) => setHashDeleteKey(e.target.value)}
+              placeholder="Key to delete..."
+              className="px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-gray-600 bg-transparent font-mono text-sm focus:border-primary outline-none w-32"
+            />
+          )}
           <button onClick={handleDelete} className="px-4 py-2 bg-error/10 text-error font-semibold rounded-lg text-sm hover:bg-error-fill hover:text-white transition-all active:scale-95">
             {opLabels.delete}
           </button>
@@ -303,6 +345,15 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
           <button onClick={handleRandomize} className="px-4 py-2 bg-accent/10 text-accent font-semibold rounded-lg text-sm hover:bg-accent-fill hover:text-white transition-all active:scale-95">
             Randomize
           </button>
+
+          {structure === "deque" && (
+            <button
+              onClick={() => setDequeMode(dequeMode === "front" ? "back" : "front")}
+              className="px-4 py-2 bg-secondary/10 text-secondary font-semibold rounded-lg text-sm hover:bg-secondary-fill hover:text-white transition-all active:scale-95"
+            >
+              Mode: {dequeMode === "front" ? "Front" : "Back"}
+            </button>
+          )}
 
           <div className="ml-auto card px-4 py-2 text-sm">
             <span className="text-gray-500 dark:text-gray-400 text-xs mr-2">Last:</span>

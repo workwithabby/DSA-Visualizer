@@ -6,12 +6,21 @@ import { Algorithm } from "@/lib/types";
 import { ComplexityCard } from "@/components/ComplexityCard";
 import { SortingVisualizer } from "@/visualizers/SortingVisualizer";
 import { SearchingVisualizer } from "@/visualizers/SearchingVisualizer";
+import { GraphVisualizer } from "@/visualizers/GraphVisualizer";
 import { CodeViewer } from "@/components/CodeViewer";
 import { ProgressVisit } from "@/components/ProgressVisit";
 import {
   bubbleSortCode,
+  selectionSortCode,
+  insertionSortCode,
+  mergeSortCode,
+  quickSortCode,
+  heapSortCode,
   linearSearchCode,
   binarySearchCode,
+  bfsCode,
+  dfsCode,
+  dijkstraCode,
 } from "@/lib/codeSnippets";
 
 const difficultyClass: Record<string, string> = {
@@ -26,30 +35,50 @@ export async function generateStaticParams() {
 
 const SORTING_ALGOS = ["bubble-sort", "selection-sort", "insertion-sort", "merge-sort", "quick-sort", "heap-sort"];
 const SEARCHING_ALGOS = ["linear-search", "binary-search"];
+const GRAPH_ALGOS = ["bfs", "dfs", "dijkstra"];
 
 function renderVisualizer(slug: string) {
   if (SORTING_ALGOS.includes(slug)) {
-    const algoMap: Record<string, "bubble" | "selection" | "insertion" | "merge" | "quick"> = {
+    const algoMap: Record<string, "bubble" | "selection" | "insertion" | "merge" | "quick" | "heap"> = {
       "bubble-sort": "bubble",
       "selection-sort": "selection",
       "insertion-sort": "insertion",
       "merge-sort": "merge",
       "quick-sort": "quick",
-      "heap-sort": "bubble",
+      "heap-sort": "heap",
     };
     return <SortingVisualizer algorithm={algoMap[slug]} topicSlug={slug} />;
   }
   if (SEARCHING_ALGOS.includes(slug)) {
     return <SearchingVisualizer algo={slug === "binary-search" ? "binary" : "linear"} topicSlug={slug} />;
   }
+  if (GRAPH_ALGOS.includes(slug)) {
+    const graphAlgoMap: Record<string, "bfs" | "dfs" | "dijkstra"> = {
+      bfs: "bfs",
+      dfs: "dfs",
+      dijkstra: "dijkstra",
+    };
+    return <GraphVisualizer algo={graphAlgoMap[slug]} topicSlug={slug} />;
+  }
   return <SearchingVisualizer algo="linear" topicSlug={slug} />;
 }
 
 function renderCodeViewer(slug: string, activeLine: number | undefined) {
-  if (slug === "bubble-sort") return <CodeViewer codeBlocks={bubbleSortCode} activeLine={activeLine} />;
-  if (slug === "linear-search") return <CodeViewer codeBlocks={linearSearchCode} activeLine={activeLine} />;
-  if (slug === "binary-search") return <CodeViewer codeBlocks={binarySearchCode} activeLine={activeLine} />;
-  return <CodeViewer codeBlocks={bubbleSortCode} activeLine={activeLine} />;
+  const codeMap: Record<string, typeof bubbleSortCode> = {
+    "bubble-sort": bubbleSortCode,
+    "selection-sort": selectionSortCode,
+    "insertion-sort": insertionSortCode,
+    "merge-sort": mergeSortCode,
+    "quick-sort": quickSortCode,
+    "heap-sort": heapSortCode,
+    "linear-search": linearSearchCode,
+    "binary-search": binarySearchCode,
+    bfs: bfsCode,
+    dfs: dfsCode,
+    dijkstra: dijkstraCode,
+  };
+  const code = codeMap[slug] ?? bubbleSortCode;
+  return <CodeViewer codeBlocks={code} activeLine={activeLine} />;
 }
 
 export default async function AlgorithmDetailPage({

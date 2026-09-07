@@ -24,7 +24,7 @@ interface SortStep {
   state: ElementState;
 }
 
-type SortAlgorithm = "bubble" | "selection" | "insertion" | "merge" | "quick";
+type SortAlgorithm = "bubble" | "selection" | "insertion" | "merge" | "quick" | "heap";
 
 interface SortingVisualizerProps {
   algorithm?: SortAlgorithm;
@@ -61,14 +61,24 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
       const arr = initialBars.map((b) => ({ ...b }));
       const genSteps: SortStep[] = [];
 
-      const pushStep = (description: string, explanation: string, why: string, codeLine: number, highlighted: number[], state: ElementState) => {
+      const pushStep = (
+        description: string,
+        explanation: string,
+        why: string,
+        codeLine: number,
+        highlighted: number[],
+        state: ElementState
+      ) => {
         genSteps.push({
           description,
           explanation,
           why,
           codeLine,
-          bars: arr.map((b) => ({ ...b })),
-          highlighted,
+          bars: arr.map((b, idx) => {
+            const firstIdx = arr.findIndex((x) => x.id === b.id);
+            return { ...b, id: firstIdx === idx ? b.id : `${b.id}-${idx}` };
+          }),
+          highlighted: highlighted.filter((i) => i >= 0 && i < arr.length),
           state,
         });
       };
@@ -81,7 +91,9 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
             const b = arr[j + 1].value;
             pushStep(
               `Compare ${a} and ${b}`,
-              a > b ? `${a} is greater than ${b}, so we need to swap them.` : `${a} is less than or equal to ${b}, so they stay in order.`,
+              a > b
+                ? `${a} is greater than ${b}, so we need to swap them.`
+                : `${a} is less than or equal to ${b}, so they stay in order.`,
               "We compare adjacent elements to check if they are in the correct order. Larger elements should be to the right.",
               2,
               [j, j + 1],
@@ -92,8 +104,8 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
               [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
               swapped = true;
               pushStep(
-                `Swap ${arr[j].value} and ${arr[j + 1].value}`,
-                `Since ${arr[j + 1].value} is smaller, we swap them so the smaller one comes first.`,
+                `Swap ${a} and ${b}`,
+                `Since ${a} is greater than ${b}, we swap them so the smaller one comes first.`,
                 "The bubble sort moves larger elements toward the end by swapping adjacent pairs.",
                 3,
                 [j, j + 1],
@@ -159,10 +171,12 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
           }
 
           if (minIdx !== i) {
+            const valI = arr[i].value;
+            const valMin = arr[minIdx].value;
             [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
             pushStep(
-              `Swap arr[${i}] (${arr[i].value}) with arr[${minIdx}] (${arr[minIdx].value})`,
-              `Found minimum at index ${minIdx}. Swap it with position ${i}.`,
+              `Swap arr[${i}] (${valI}) with arr[${minIdx}] (${valMin})`,
+              `Found minimum ${valMin} at index ${minIdx}. Swap it with position ${i}.`,
               "We place the minimum at its correct sorted position at the beginning of the unsorted region.",
               4,
               [i, minIdx],
@@ -186,32 +200,400 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
           [],
           "sorted"
         );
-      } else {
-        const sorted = [...arr].sort((a, b) => a.value - b.value);
+      } else if (algo === "insertion") {
         pushStep(
-          `${algo === "merge" ? "Merge" : algo === "quick" ? "Quick" : "Insertion"} Sort started`,
-          `Initial array: [${arr.map((b) => b.value).join(", ")}]`,
-          `We apply the ${algo === "merge" ? "divide and conquer" : algo === "quick" ? "pivot-based" : "incremental insertion"} strategy.`,
+          "Start with second element",
+          "The first element is trivially sorted. We begin inserting from the second element.",
+          "Insertion sort builds the sorted portion one element at a time.",
+          0,
+          [0],
+          "sorted"
+        );
+
+        for (let i = 1; i < arr.length; i++) {
+          const key = arr[i];
+          pushStep(
+            `Pick element ${key.value} at index ${i}`,
+            `We need to insert ${key.value} into the sorted portion [0..${i - 1}].`,
+            "We take the next unsorted element and find where it belongs.",
+            1,
+            [i],
+            "selected"
+          );
+
+          let j = i - 1;
+          while (j >= 0 && arr[j].value > key.value) {
+            pushStep(
+              `Compare ${arr[j].value} with ${key.value}`,
+              `${arr[j].value} > ${key.value}, so shift ${arr[j].value} to the right.`,
+              "We compare with sorted elements from right to left to find the insertion point.",
+              2,
+              [j, i],
+              "comparing"
+            );
+
+            arr[j + 1] = arr[j];
+            pushStep(
+              `Shift ${arr[j].value} from index ${j} to ${j + 1}`,
+              `Moving ${arr[j].value} right to make room for ${key.value}.`,
+              "Shifting elements right creates space for the new element.",
+              2,
+              [j, j + 1],
+              "swapping"
+            );
+            playSound(sounds.swap);
+            j--;
+          }
+
+          arr[j + 1] = key;
+          pushStep(
+            `Insert ${key.value} at position ${j + 1}`,
+            `Found the correct spot. ${key.value} goes to index ${j + 1}.`,
+            "We place the element in the gap created by shifting.",
+            3,
+            [j + 1],
+            "sorted"
+          );
+
+          pushStep(
+            `Sorted portion is now [0..${i}]`,
+            `[${arr.slice(0, i + 1).map((b) => b.value).join(", ")}] are sorted.`,
+            "The sorted portion grows by one element each iteration.",
+            4,
+            Array.from({ length: i + 1 }, (_, k) => k),
+            "sorted"
+          );
+        }
+
+        pushStep(
+          "Insertion Sort complete!",
+          "All elements are in ascending order.",
+          "Insertion sort is efficient for nearly sorted data.",
+          5,
+          [],
+          "sorted"
+        );
+      } else if (algo === "merge") {
+        pushStep(
+          "Merge Sort started",
+          `Array: [${arr.map((b) => b.value).join(", ")}]`,
+          "Divide the array, sort halves, then merge. Divide-and-conquer strategy.",
           0,
           [],
           "selected"
         );
 
-        for (let i = 0; i < sorted.length; i++) {
+        function mergeSortRec(left: number, right: number): void {
+          if (left >= right) return;
+          const mid = Math.floor((left + right) / 2);
+
           pushStep(
-            `Element ${sorted[i].value} placed in position ${i}`,
-            `Position ${i} now contains the element ${sorted[i].value}.`,
-            "Each element is being placed at its correct sorted index.",
-            Math.min(4, i),
-            [i],
+            `Divide [${left}..${right}] at index ${mid}`,
+            `Left: [${arr.slice(left, mid + 1).map((b) => b.value).join(", ")}], Right: [${arr.slice(mid + 1, right + 1).map((b) => b.value).join(", ")}]`,
+            "Splitting into smaller subarrays until single elements remain.",
+            0,
+            Array.from({ length: right - left + 1 }, (_, i) => left + i),
+            "comparing"
+          );
+
+          mergeSortRec(left, mid);
+          mergeSortRec(mid + 1, right);
+
+          const leftArr = arr.slice(left, mid + 1);
+          const rightArr = arr.slice(mid + 1, right + 1);
+
+          pushStep(
+            `Merge [${left}..${mid}] and [${mid + 1}..${right}]`,
+            `Combining [${leftArr.map((b) => b.value).join(", ")}] and [${rightArr.map((b) => b.value).join(", ")}]`,
+            "We combine two sorted halves into one sorted subarray.",
+            3,
+            Array.from({ length: right - left + 1 }, (_, i) => left + i),
+            "selected"
+          );
+
+          let i = 0,
+            j = 0,
+            k = left;
+          while (i < leftArr.length && j < rightArr.length) {
+            pushStep(
+              `Compare ${leftArr[i].value} and ${rightArr[j].value}`,
+              leftArr[i].value <= rightArr[j].value
+                ? `${leftArr[i].value} <= ${rightArr[j].value}, take from left.`
+                : `${leftArr[i].value} > ${rightArr[j].value}, take from right.`,
+              "Pick the smaller element to maintain sorted order.",
+              3,
+              [k],
+              "comparing"
+            );
+
+            if (leftArr[i].value <= rightArr[j].value) {
+              arr[k] = leftArr[i];
+              i++;
+            } else {
+              arr[k] = rightArr[j];
+              j++;
+            }
+
+            pushStep(
+              `Place ${arr[k].value} at index ${k}`,
+              `Position ${k} now has ${arr[k].value}.`,
+              "Place the selected element in its correct merged position.",
+              3,
+              [k],
+              "swapping"
+            );
+            playSound(sounds.swap);
+            k++;
+          }
+
+          while (i < leftArr.length) {
+            arr[k] = leftArr[i];
+            pushStep(
+              `Copy remaining ${arr[k].value} to index ${k}`,
+              "Left subarray has remaining elements.",
+              "Copy remaining elements — they're already sorted.",
+              3,
+              [k],
+              "swapping"
+            );
+            i++;
+            k++;
+          }
+
+          while (j < rightArr.length) {
+            arr[k] = rightArr[j];
+            pushStep(
+              `Copy remaining ${arr[k].value} to index ${k}`,
+              "Right subarray has remaining elements.",
+              "Copy remaining elements — they're already sorted.",
+              3,
+              [k],
+              "swapping"
+            );
+            j++;
+            k++;
+          }
+
+          pushStep(
+            `Merged [${left}..${right}]`,
+            `Result: [${arr.slice(left, right + 1).map((b) => b.value).join(", ")}]`,
+            "The merged subarray is now sorted.",
+            4,
+            Array.from({ length: right - left + 1 }, (_, i) => left + i),
             "sorted"
           );
         }
+
+        mergeSortRec(0, arr.length - 1);
+
         pushStep(
-          `${algo === "merge" ? "Merge" : algo === "quick" ? "Quick" : "Insertion"} Sort complete!`,
+          "Merge Sort complete!",
           "The array is now fully sorted.",
-          "All elements are in ascending order.",
-          4,
+          "Merge sort guarantees O(n log n) time.",
+          5,
+          [],
+          "sorted"
+        );
+      } else if (algo === "quick") {
+        pushStep(
+          "Quick Sort started",
+          `Array: [${arr.map((b) => b.value).join(", ")}]`,
+          "Pick a pivot, partition around it, then recurse.",
+          0,
+          [],
+          "selected"
+        );
+
+        function partition(low: number, high: number): number {
+          const pivotVal = arr[high].value;
+          pushStep(
+            `Partition [${low}..${high}] — pivot: ${pivotVal}`,
+            `Elements < ${pivotVal} go left, >= ${pivotVal} go right.`,
+            "The pivot divides elements into two partitions.",
+            0,
+            Array.from({ length: high - low + 1 }, (_, i) => low + i),
+            "selected"
+          );
+
+          let i = low - 1;
+          for (let j = low; j < high; j++) {
+            pushStep(
+              `Compare arr[${j}]=${arr[j].value} with pivot ${pivotVal}`,
+              arr[j].value < pivotVal
+                ? `${arr[j].value} < ${pivotVal} -> left partition.`
+                : `${arr[j].value} >= ${pivotVal} -> stays right.`,
+              "Each element is placed in the correct partition.",
+              2,
+              [j, high],
+              "comparing"
+            );
+
+            if (arr[j].value < pivotVal) {
+              i++;
+              if (i !== j) {
+                const vi = arr[i].value;
+                const vj = arr[j].value;
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+                pushStep(
+                  `Swap arr[${i}]=${vi} and arr[${j}]=${vj}`,
+                  `Move ${vj} left, ${vi} right.`,
+                  "Swap to place elements in correct partitions.",
+                  3,
+                  [i, j],
+                  "swapping"
+                );
+                playSound(sounds.swap);
+              }
+            }
+          }
+
+          const pivotIdx = i + 1;
+          if (pivotIdx !== high) {
+            const pv = arr[pivotIdx].value;
+            [arr[pivotIdx], arr[high]] = [arr[high], arr[pivotIdx]];
+            pushStep(
+              `Place pivot ${pivotVal} at index ${pivotIdx}`,
+              `Swap pivot with arr[${pivotIdx}]=${pv}.`,
+              "Pivot is now in its final sorted position.",
+              3,
+              [pivotIdx, high],
+              "swapping"
+            );
+            playSound(sounds.swap);
+          }
+
+          pushStep(
+            `Pivot ${pivotVal} settled at index ${pivotIdx}`,
+            `Left < ${pivotVal}, right >= ${pivotVal}.`,
+            "Pivot is sorted. Recurse on the two partitions.",
+            4,
+            [pivotIdx],
+            "sorted"
+          );
+
+          return pivotIdx;
+        }
+
+        function quickSortRec(low: number, high: number): void {
+          if (low >= high) return;
+          const p = partition(low, high);
+          quickSortRec(low, p - 1);
+          quickSortRec(p + 1, high);
+        }
+
+        quickSortRec(0, arr.length - 1);
+
+        pushStep(
+          "Quick Sort complete!",
+          "The array is now fully sorted.",
+          "Quick sort averages O(n log n) time.",
+          5,
+          [],
+          "sorted"
+        );
+      } else if (algo === "heap") {
+        pushStep(
+          "Heap Sort started",
+          `Array: [${arr.map((b) => b.value).join(", ")}]`,
+          "Build a max-heap, then extract the maximum repeatedly.",
+          0,
+          [],
+          "selected"
+        );
+
+        function heapify(size: number, root: number): void {
+          let largest = root;
+          const left = 2 * root + 1;
+          const right = 2 * root + 2;
+          const idx = [root];
+          if (left < size) idx.push(left);
+          if (right < size) idx.push(right);
+
+          pushStep(
+            `Heapify at index ${root} (${arr[root].value})`,
+            `Compare with` +
+              (left < size ? ` left=${arr[left].value}` : "") +
+              (right < size ? ` right=${arr[right].value}` : "") +
+              ".",
+            "Ensure parent is larger than both children.",
+            3,
+            idx,
+            "comparing"
+          );
+
+          if (left < size && arr[left].value > arr[largest].value) largest = left;
+          if (right < size && arr[right].value > arr[largest].value) largest = right;
+
+          if (largest !== root) {
+            const rv = arr[root].value;
+            const lv = arr[largest].value;
+            [arr[root], arr[largest]] = [arr[largest], arr[root]];
+            pushStep(
+              `Swap ${rv} and ${lv}`,
+              `${lv} > ${rv}, swap to restore heap property.`,
+              "Parent swaps with larger child.",
+              3,
+              [root, largest],
+              "swapping"
+            );
+            playSound(sounds.swap);
+            heapify(size, largest);
+          }
+        }
+
+        pushStep(
+          "Phase 1: Build max-heap",
+          "Rearrange array into a max-heap.",
+          "A max-heap has the largest element at the root.",
+          0,
+          [],
+          "selected"
+        );
+
+        for (let i = Math.floor(arr.length / 2) - 1; i >= 0; i--) {
+          heapify(arr.length, i);
+        }
+
+        pushStep(
+          "Max-heap built",
+          `Array: [${arr.map((b) => b.value).join(", ")}]`,
+          "Largest element is at index 0.",
+          0,
+          [],
+          "sorted"
+        );
+
+        for (let i = arr.length - 1; i > 0; i--) {
+          const rv = arr[0].value;
+          const ev = arr[i].value;
+          [arr[0], arr[i]] = [arr[i], arr[0]];
+          pushStep(
+            `Swap root ${rv} with ${ev}`,
+            `Move max ${rv} to final position at index ${i}.`,
+            "Root is always the max — place it at the end.",
+            1,
+            [0, i],
+            "swapping"
+          );
+          playSound(sounds.swap);
+
+          pushStep(
+            `Index ${i} sorted (${arr[i].value})`,
+            `${arr[i].value} is in its final position.`,
+            "Sorted portion grows from the right.",
+            4,
+            [i],
+            "sorted"
+          );
+
+          heapify(i, 0);
+        }
+
+        pushStep(
+          "Heap Sort complete!",
+          "The array is now fully sorted.",
+          "O(n log n) time, O(1) space.",
+          5,
           [],
           "sorted"
         );
@@ -277,7 +659,6 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
     setCurrentStepIndex((prev) => {
       const next = Math.min(prev + 1, steps.length - 1);
       handleStepEffect(next);
-      if (topicSlug && next === steps.length - 1) markCompleted(topicSlug);
       return next;
     });
   };
@@ -296,7 +677,7 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
     setShowWhy(false);
   };
 
-  const handleStepEffect = (index: number) => {
+  const handleStepEffect = useCallback((index: number) => {
     if (index < 0 || index >= steps.length) return;
     const step = steps[index];
     if (step.description.includes("Swap")) {
@@ -305,10 +686,10 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
       playSound(sounds.compare);
     } else if (step.description.includes("complete") || step.description.includes("sorted!")) {
       playSound(sounds.complete);
-    } else if (step.description.includes("final position")) {
+    } else if (step.description.includes("final position") || step.description.includes("sorted")) {
       playSound(sounds.success);
     }
-  };
+  }, [steps]);
 
   useEffect(() => {
     if (!isPlaying) return;
@@ -318,7 +699,6 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
       setCurrentStepIndex((prev) => {
         if (prev + 1 >= steps.length) {
           setIsPlaying(false);
-          if (topicSlug) markCompleted(topicSlug);
           return prev;
         }
         const next = prev + 1;
@@ -328,10 +708,17 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
     }, speed);
 
     return () => clearTimeout(timer);
-  }, [isPlaying, currentStepIndex, steps.length, speed, topicSlug, markCompleted]);
+  }, [isPlaying, currentStepIndex, steps.length, handleStepEffect, speed]);
+
+  useEffect(() => {
+    if (steps.length > 0 && currentStepIndex === steps.length - 1) {
+      if (topicSlug) markCompleted(topicSlug);
+    }
+  }, [currentStepIndex, steps.length, topicSlug, markCompleted]);
 
   const currentStep = currentStepIndex >= 0 ? steps[currentStepIndex] : null;
   const displayBars = currentStep ? currentStep.bars : bars;
+  const maxDisplayValue = Math.max(1, ...displayBars.map((b) => b.value));
 
   return (
     <div className="space-y-6">
@@ -374,7 +761,7 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
               >
                 <motion.div
                   layout
-                  animate={{ height: `${Math.max((bar.value / 100) * 165, 20)}px` }}
+                  animate={{ height: `${Math.max((bar.value / maxDisplayValue) * 165, 20)}px` }}
                   transition={{ layout: { type: "spring", stiffness: 300, damping: 28 } }}
                   className={`w-full rounded-t-lg shadow-lg ${stateClass} transition-colors duration-200 flex items-start justify-center pt-2 text-white font-bold`}
                 >

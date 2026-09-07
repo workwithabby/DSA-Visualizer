@@ -72,13 +72,18 @@ export function SearchingVisualizer({ algo = "linear", topicSlug }: { algo?: Sea
         type: "notfound",
       });
     } else {
-      const sorted = [...data].sort((a, b) => a - b);
+      const isSorted = data.every((v, i) => i === 0 || data[i - 1] <= v);
+      const sorted = isSorted ? [...data] : [...data].sort((a, b) => a - b);
       let low = 0;
       let high = sorted.length - 1;
 
       genSteps.push({
-        description: `Array is sorted: [${sorted.join(", ")}]`,
-        explanation: `Binary search requires a sorted array to work correctly.`,
+        description: isSorted
+          ? `Array is already sorted: [${sorted.join(", ")}]`
+          : `Array was not sorted. Sorted version: [${sorted.join(", ")}]`,
+        explanation: isSorted
+          ? `Binary search requires a sorted array. Your data is already sorted.`
+          : `Binary search requires a sorted array. We sorted your data: [${sorted.join(", ")}] (original order was [${data.join(", ")}]).`,
         why: "Binary search eliminates half the search space each step, which only works on ordered data.",
         arr: [...sorted],
         highlighted: [],
@@ -129,9 +134,13 @@ export function SearchingVisualizer({ algo = "linear", topicSlug }: { algo?: Sea
 
   const resetData = () => {
     if (algo === "linear") {
-      setArr([42, 17, 89, 5, 63, 28, 71, 34]);
+      const count = 6 + Math.floor(Math.random() * 4);
+      const data = Array.from({ length: count }, () => Math.floor(Math.random() * 90) + 5);
+      setArr(data);
     } else {
-      setArr([5, 12, 25, 34, 47, 58, 63, 79, 84, 92]);
+      const count = 8 + Math.floor(Math.random() * 4);
+      const data = Array.from({ length: count }, () => Math.floor(Math.random() * 90) + 5).sort((a, b) => a - b);
+      setArr(data);
     }
     setSteps([]);
     setCurrentStepIndex(-1);
@@ -156,7 +165,7 @@ export function SearchingVisualizer({ algo = "linear", topicSlug }: { algo?: Sea
       .map((s) => parseInt(s.trim()))
       .filter((n) => !isNaN(n));
     if (values.length === 0) return;
-    setArr(algo === "binary" ? values.sort((a, b) => a - b) : values);
+    setArr(values);
     setSteps([]);
     setCurrentStepIndex(-1);
     playSound(sounds.click);
@@ -194,7 +203,6 @@ export function SearchingVisualizer({ algo = "linear", topicSlug }: { algo?: Sea
         else if (steps[next].type === "compare") playSound(sounds.compare);
         else if (steps[next].type === "notfound") playSound(sounds.error);
       }
-      if (topicSlug && next === steps.length - 1) markCompleted(topicSlug);
       return next;
     });
   };
@@ -216,7 +224,6 @@ export function SearchingVisualizer({ algo = "linear", topicSlug }: { algo?: Sea
         if (prev + 1 >= steps.length) {
           setIsPlaying(false);
           if (steps[prev]?.type === "found") playSound(sounds.complete);
-          if (topicSlug) markCompleted(topicSlug);
           return prev;
         }
         const next = prev + 1;
@@ -227,7 +234,13 @@ export function SearchingVisualizer({ algo = "linear", topicSlug }: { algo?: Sea
       });
     }, speed);
     return () => clearTimeout(t);
-  }, [isPlaying, currentStepIndex, steps, speed, topicSlug, markCompleted]);
+  }, [isPlaying, currentStepIndex, steps, speed]);
+
+  useEffect(() => {
+    if (steps.length > 0 && currentStepIndex === steps.length - 1) {
+      if (topicSlug) markCompleted(topicSlug);
+    }
+  }, [currentStepIndex, steps.length, topicSlug, markCompleted]);
 
   const currentStep = currentStepIndex >= 0 ? steps[currentStepIndex] : null;
   const displayArr = currentStep ? currentStep.arr : arr;
