@@ -47,7 +47,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Deployment
 
-The website is deployed on [Vercel](https://vercel.com).
+The website is deployed on [Vercel](https://abd-dsa-visualizer.vercel.app/).
 
 ## About
 
