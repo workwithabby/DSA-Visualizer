@@ -47,12 +47,12 @@ function Home() {
               </Link>
             </MotionDiv>
             <MotionDiv
-              className="mt-8 font-mono text-[11px] uppercase tracking-[0.15em] text-faint"
+              className="mt-8 font-mono text-[11px] tracking-[0.15em] text-faint"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.55 }}
             >
-              fig. 01 · {dataStructures.length} structures / {algorithms.length} algorithms / step-by-step playback
+              Data Structures & Algorithms Visualizer
             </MotionDiv>
           </div>
 
