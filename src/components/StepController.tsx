@@ -52,7 +52,7 @@ export function StepController({
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700/50 tabular-nums">
+          <span className="text-sm font-semibold px-3 py-2 rounded-lg bg-ink/[0.04] dark:bg-ink/[0.04] tabular-nums">
             Step {currentStep} / {totalSteps}
           </span>
         </div>

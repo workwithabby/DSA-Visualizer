@@ -227,10 +227,10 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
     return Array.from({ length: count }, () => makeBar(Math.floor(Math.random() * 90) + 10));
   };
 
-  const startSort = (preset: number[] = []) => {
-    const data = preset.length > 0 ? toBars(preset) : generateRandomBars();
-    setBars(data);
-    const newSteps = generateSteps(data, algorithm);
+  const startSort = (data: Bar[] = []) => {
+    const init = data.length > 0 ? data : generateRandomBars();
+    setBars(init);
+    const newSteps = generateSteps(init, algorithm);
     setSteps(newSteps);
     setCurrentStepIndex(-1);
     setIsPlaying(false);
@@ -259,7 +259,7 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
 
   const handlePlayPause = () => {
     if (steps.length === 0) {
-      startSort();
+      startSort(bars);
       if (topicSlug) markStarted(topicSlug);
       setIsPlaying(true);
       return;
@@ -269,7 +269,7 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
 
   const handleNext = () => {
     if (steps.length === 0) {
-      startSort();
+      startSort(bars);
       if (topicSlug) markStarted(topicSlug);
       setCurrentStepIndex(0);
       return;
@@ -422,7 +422,7 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
           </button>
           <button
             onClick={() => {
-              startSort([64, 34, 25, 12, 22, 11, 90]);
+              startSort(toBars([64, 34, 25, 12, 22, 11, 90]));
               if (topicSlug) markStarted(topicSlug);
             }}
             className="px-4 py-2 bg-secondary/10 text-secondary font-semibold rounded-lg text-sm hover:bg-secondary-fill hover:text-white transition-all active:scale-95"
