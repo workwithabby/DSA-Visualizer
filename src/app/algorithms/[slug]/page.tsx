@@ -7,6 +7,7 @@ import { ComplexityCard } from "@/components/ComplexityCard";
 import { SortingVisualizer } from "@/visualizers/SortingVisualizer";
 import { SearchingVisualizer } from "@/visualizers/SearchingVisualizer";
 import { CodeViewer } from "@/components/CodeViewer";
+import { ProgressVisit } from "@/components/ProgressVisit";
 import {
   bubbleSortCode,
   linearSearchCode,
@@ -36,12 +37,12 @@ function renderVisualizer(slug: string) {
       "quick-sort": "quick",
       "heap-sort": "bubble",
     };
-    return <SortingVisualizer algorithm={algoMap[slug]} />;
+    return <SortingVisualizer algorithm={algoMap[slug]} topicSlug={slug} />;
   }
   if (SEARCHING_ALGOS.includes(slug)) {
-    return <SearchingVisualizer algo={slug === "binary-search" ? "binary" : "linear"} />;
+    return <SearchingVisualizer algo={slug === "binary-search" ? "binary" : "linear"} topicSlug={slug} />;
   }
-  return <SearchingVisualizer algo="linear" />;
+  return <SearchingVisualizer algo="linear" topicSlug={slug} />;
 }
 
 function renderCodeViewer(slug: string, activeLine: number | undefined) {
@@ -67,6 +68,7 @@ export default async function AlgorithmDetailPage({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <ProgressVisit slug={slug} />
       <Link
         href="/algorithms"
         className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-wide text-faint hover:text-primary transition-colors mb-8"

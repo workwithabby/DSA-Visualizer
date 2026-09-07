@@ -4,6 +4,7 @@ import { Inter, Space_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SoundProvider } from "@/components/SoundProvider";
+import { ProgressProvider } from "@/components/ProgressProvider";
 import { Navbar } from "@/components/Navbar";
 import { dataStructures } from "@/lib/data";
 
@@ -53,19 +54,21 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <ThemeProvider>
           <SoundProvider>
-            <Navbar />
-            <main className="flex-1 pt-16">{children}</main>
-            <footer className="border-t border-rule py-8 mt-16">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
-                <p className="text-sm text-muted">
-                  <span className="font-display font-bold text-ink">DSA Visualizer</span>
-                  <span className="text-faint"> — interactive learning tool for data structures &amp; algorithms</span>
-                </p>
-                <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-faint">
-                  {dataStructures.length} structures · step-by-step playback
-                </p>
-              </div>
-            </footer>
+            <ProgressProvider>
+              <Navbar />
+              <main className="flex-1 pt-16">{children}</main>
+              <footer className="border-t border-rule py-8 mt-16">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
+                  <p className="text-sm text-muted">
+                    <span className="font-display font-bold text-ink">DSA Visualizer</span>
+                    <span className="text-faint"> — interactive learning tool for data structures &amp; algorithms</span>
+                  </p>
+                  <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-faint">
+                    {dataStructures.length} structures · step-by-step playback
+                  </p>
+                </div>
+              </footer>
+            </ProgressProvider>
           </SoundProvider>
         </ThemeProvider>
       </body>

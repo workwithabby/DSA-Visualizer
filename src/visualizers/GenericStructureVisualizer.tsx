@@ -1,17 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSoundContext } from "@/components/SoundProvider";
 import { sounds } from "@/lib/sounds";
+import { useProgress } from "@/components/ProgressProvider";
 
 export type StructureType = "array" | "linked-list" | "stack" | "queue" | "deque" | "hash-table";
 
 interface GenericStructureVisualizerProps {
   structure: StructureType;
+  topicSlug?: string;
 }
 
-export function GenericStructureVisualizer({ structure }: GenericStructureVisualizerProps) {
+export function GenericStructureVisualizer({ structure, topicSlug }: GenericStructureVisualizerProps) {
   const [items, setItems] = useState<(number | null)[]>(Array(8).fill(null).map((_, i) => (i + 1) * 10));
   const [inputValue, setInputValue] = useState("");
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -19,9 +21,22 @@ export function GenericStructureVisualizer({ structure }: GenericStructureVisual
   const [hashMap, setHashMap] = useState<Record<string, number>>({ "apple": 10, "banana": 20, "cherry": 30 });
 
   const { soundEnabled } = useSoundContext();
+  const { markStarted, markCompleted } = useProgress();
+  const usedInsert = useRef(false);
+  const usedDelete = useRef(false);
 
   const playSound = (fn: () => void) => {
     if (soundEnabled) fn();
+  };
+
+  const maybeComplete = () => {
+    if (usedInsert.current && usedDelete.current && topicSlug) markCompleted(topicSlug);
+  };
+
+  const noteDelete = () => {
+    usedDelete.current = true;
+    if (topicSlug) markStarted(topicSlug);
+    maybeComplete();
   };
 
   const handleInsert = () => {
@@ -64,6 +79,9 @@ export function GenericStructureVisualizer({ structure }: GenericStructureVisual
       setLastOperation(`Inserted ${val}`);
       playSound(sounds.insert);
     }
+    usedInsert.current = true;
+    if (topicSlug) markStarted(topicSlug);
+    maybeComplete();
     setInputValue("");
   };
 
@@ -105,6 +123,7 @@ export function GenericStructureVisualizer({ structure }: GenericStructureVisual
       setLastOperation(`Deleted ${removed}`);
       playSound(sounds.delete);
     }
+    noteDelete();
   };
 
   const handleClear = () => {
@@ -124,6 +143,7 @@ export function GenericStructureVisualizer({ structure }: GenericStructureVisual
     setSelectedIndex(null);
     setLastOperation(`Randomized with ${count} elements`);
     playSound(sounds.insert);
+    if (topicSlug) markStarted(topicSlug);
   };
 
   const operationLabels = {

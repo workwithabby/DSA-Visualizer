@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSoundContext } from "@/components/SoundProvider";
 import { sounds } from "@/lib/sounds";
 import { StepController } from "@/components/StepController";
+import { useProgress } from "@/components/ProgressProvider";
 
 type SearchAlgo = "linear" | "binary";
 
@@ -18,7 +19,7 @@ interface SearchStep {
   type: "compare" | "found" | "notfound" | "init";
 }
 
-export function SearchingVisualizer({ algo = "linear" }: { algo?: SearchAlgo }) {
+export function SearchingVisualizer({ algo = "linear", topicSlug }: { algo?: SearchAlgo; topicSlug?: string }) {
   const [arr, setArr] = useState<number[]>(() =>
     algo === "linear" ? [42, 17, 89, 5, 63, 28, 71, 34] : [5, 12, 25, 34, 47, 58, 63, 79, 84, 92]
   );
@@ -31,6 +32,7 @@ export function SearchingVisualizer({ algo = "linear" }: { algo?: SearchAlgo }) 
   const [showWhy, setShowWhy] = useState(false);
 
   const { soundEnabled } = useSoundContext();
+  const { markStarted, markCompleted } = useProgress();
 
   const playSound = (fn: () => void) => {
     if (soundEnabled) fn();
@@ -145,6 +147,7 @@ export function SearchingVisualizer({ algo = "linear" }: { algo?: SearchAlgo }) 
     setCurrentStepIndex(-1);
     setIsPlaying(false);
     playSound(sounds.click);
+    if (topicSlug) markStarted(topicSlug);
   };
 
   const handleCustomArray = () => {
@@ -157,14 +160,22 @@ export function SearchingVisualizer({ algo = "linear" }: { algo?: SearchAlgo }) 
     setSteps([]);
     setCurrentStepIndex(-1);
     playSound(sounds.click);
+    if (topicSlug) markStarted(topicSlug);
+  };
+
+  const startSearch = (autoPlay: boolean) => {
+    const defaultTarget = parseInt(target) || (algo === "linear" ? 28 : 58);
+    const newSteps = generateSearchSteps(arr, defaultTarget, algo);
+    setSteps(newSteps);
+    setTarget(String(defaultTarget));
+    if (topicSlug) markStarted(topicSlug);
+    setCurrentStepIndex(-1);
+    setIsPlaying(autoPlay);
   };
 
   const handlePlayPause = () => {
     if (steps.length === 0) {
-      const defaultTarget = parseInt(target) || (algo === "linear" ? 28 : 58);
-      const newSteps = generateSearchSteps(arr, defaultTarget, algo);
-      setSteps(newSteps);
-      setTarget(String(defaultTarget));
+      startSearch(true);
       return;
     }
     setIsPlaying((p) => !p);
@@ -172,7 +183,8 @@ export function SearchingVisualizer({ algo = "linear" }: { algo?: SearchAlgo }) 
 
   const handleNext = () => {
     if (steps.length === 0) {
-      handlePlayPause();
+      startSearch(false);
+      setCurrentStepIndex(0);
       return;
     }
     setCurrentStepIndex((prev) => {
@@ -182,6 +194,7 @@ export function SearchingVisualizer({ algo = "linear" }: { algo?: SearchAlgo }) 
         else if (steps[next].type === "compare") playSound(sounds.compare);
         else if (steps[next].type === "notfound") playSound(sounds.error);
       }
+      if (topicSlug && next === steps.length - 1) markCompleted(topicSlug);
       return next;
     });
   };
@@ -203,6 +216,7 @@ export function SearchingVisualizer({ algo = "linear" }: { algo?: SearchAlgo }) 
         if (prev + 1 >= steps.length) {
           setIsPlaying(false);
           if (steps[prev]?.type === "found") playSound(sounds.complete);
+          if (topicSlug) markCompleted(topicSlug);
           return prev;
         }
         const next = prev + 1;
@@ -213,7 +227,7 @@ export function SearchingVisualizer({ algo = "linear" }: { algo?: SearchAlgo }) 
       });
     }, speed);
     return () => clearTimeout(t);
-  }, [isPlaying, currentStepIndex, steps, speed]);
+  }, [isPlaying, currentStepIndex, steps, speed, topicSlug, markCompleted]);
 
   const currentStep = currentStepIndex >= 0 ? steps[currentStepIndex] : null;
   const displayArr = currentStep ? currentStep.arr : arr;

@@ -5,6 +5,7 @@ import { dataStructures } from "@/lib/data";
 import { DataStructure } from "@/lib/types";
 import { ComplexityCard } from "@/components/ComplexityCard";
 import { GenericStructureVisualizer } from "@/visualizers/GenericStructureVisualizer";
+import { ProgressVisit } from "@/components/ProgressVisit";
 
 const difficultyClass: Record<string, string> = {
   Beginner: "tag tag-beginner",
@@ -19,17 +20,17 @@ export async function generateStaticParams() {
 function renderVisualizer(slug: string) {
   switch (slug) {
     case "array":
-      return <GenericStructureVisualizer structure="array" />;
+      return <GenericStructureVisualizer structure="array" topicSlug={slug} />;
     case "linked-list":
-      return <GenericStructureVisualizer structure="linked-list" />;
+      return <GenericStructureVisualizer structure="linked-list" topicSlug={slug} />;
     case "stack":
-      return <GenericStructureVisualizer structure="stack" />;
+      return <GenericStructureVisualizer structure="stack" topicSlug={slug} />;
     case "queue":
-      return <GenericStructureVisualizer structure="queue" />;
+      return <GenericStructureVisualizer structure="queue" topicSlug={slug} />;
     case "deque":
-      return <GenericStructureVisualizer structure="deque" />;
+      return <GenericStructureVisualizer structure="deque" topicSlug={slug} />;
     case "hash-table":
-      return <GenericStructureVisualizer structure="hash-table" />;
+      return <GenericStructureVisualizer structure="hash-table" topicSlug={slug} />;
     default:
       return null;
   }
@@ -53,6 +54,7 @@ export default async function DataStructureDetailPage({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <ProgressVisit slug={slug} />
       <Link
         href="/data-structures"
         className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-wide text-faint hover:text-primary transition-colors mb-8"

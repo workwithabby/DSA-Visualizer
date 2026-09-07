@@ -1,28 +1,7 @@
-import { CheckCircle2, PlayCircle, Info } from "lucide-react";
+import { Info, PlayCircle } from "lucide-react";
+import { ProgressSection } from "@/components/ProgressSection";
 
 export default function AboutPage() {
-  const completed = [
-    { name: "Array", progress: 100 },
-    { name: "Stack", progress: 100 },
-    { name: "Queue", progress: 100 },
-    { name: "Bubble Sort", progress: 100 },
-  ];
-
-  const inProgress = [
-    { name: "Binary Search", progress: 45 },
-    { name: "Merge Sort", progress: 30 },
-    { name: "Binary Tree", progress: 15 },
-  ];
-
-  const stats = {
-    ds: Math.round(completed.length / 11 * 100),
-    alg: 3 / algorithmsCount() * 100,
-  };
-
-  function algorithmsCount() {
-    return 10;
-  }
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <header className="text-center mb-14">
@@ -93,56 +72,7 @@ export default function AboutPage() {
       </div>
 
       {/* Learning progress */}
-      <div className="max-w-3xl mx-auto card p-8">
-        <p className="eyebrow text-center">
-          <span className="register" /> tracking
-        </p>
-        <h3 className="text-2xl font-bold mb-6 text-center">Your progress</h3>
-
-        <div className="space-y-6">
-          <div>
-            <div className="flex justify-between items-center font-mono text-[11px] uppercase tracking-wide mb-2">
-              <span className="text-faint">data structures</span>
-              <span className="font-bold text-primary">{Math.round(stats.ds)}%</span>
-            </div>
-            <div className="h-1.5 rounded bg-ink/[0.06] overflow-hidden">
-              <div className="h-full bg-primary transition-all duration-1000" style={{ width: `${stats.ds}%` }} />
-            </div>
-          </div>
-
-          <div>
-            <div className="flex justify-between items-center font-mono text-[11px] uppercase tracking-wide mb-2">
-              <span className="text-faint">algorithms</span>
-              <span className="font-bold text-secondary">{Math.round(stats.alg)}%</span>
-            </div>
-            <div className="h-1.5 rounded bg-ink/[0.06] overflow-hidden">
-              <div className="h-full bg-secondary transition-all duration-1000" style={{ width: `${stats.alg}%` }} />
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-10">
-          <div className="font-mono text-[11px] uppercase tracking-wide text-faint mb-3">Completed topics</div>
-          <div className="flex flex-wrap gap-2">
-            {completed.map((item) => (
-              <span key={item.name} className="tag tag-beginner">
-                <CheckCircle2 size={12} className="mr-1" /> {item.name}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-6">
-          <div className="font-mono text-[11px] uppercase tracking-wide text-faint mb-3">In progress</div>
-          <div className="flex flex-wrap gap-2">
-            {inProgress.map((item) => (
-              <span key={item.name} className="tag">
-                <PlayCircle size={12} className="mr-1 text-primary" /> {item.name} · {item.progress}%
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
+      <ProgressSection />
     </div>
   );
 }
