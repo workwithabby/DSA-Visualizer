@@ -24,7 +24,7 @@ export default function AboutPage() {
               <p className="eyebrow">
                 <span className="register" /> why
               </p>
-              <h2 className="text-xl font-bold mt-0.5">Our mission</h2>
+              <h2 className="text-xl font-bold mt-0.5">Our Mission</h2>
             </div>
           </div>
           <p className="text-muted leading-relaxed">

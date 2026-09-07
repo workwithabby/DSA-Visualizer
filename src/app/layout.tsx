@@ -6,7 +6,6 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { SoundProvider } from "@/components/SoundProvider";
 import { ProgressProvider } from "@/components/ProgressProvider";
 import { Navbar } from "@/components/Navbar";
-import { dataStructures } from "@/lib/data";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -63,8 +62,8 @@ export default function RootLayout({
                     <span className="font-display font-bold text-ink">DSA Visualizer</span>
                     <span className="text-faint"> — interactive learning tool for data structures &amp; algorithms</span>
                   </p>
-                  <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-faint">
-                    {dataStructures.length} structures · step-by-step playback
+                  <p className="font-mono text-[11px] tracking-[0.15em] text-faint">
+                    Developed by Abigail Dela Cruz
                   </p>
                 </div>
               </footer>
