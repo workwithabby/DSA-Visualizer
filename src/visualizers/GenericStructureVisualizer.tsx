@@ -170,9 +170,9 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
         {structure === "hash-table" ? (
           <div className="space-y-2">
             {Object.entries(hashMap).map(([key, val]) => (
-              <div key={key} className="flex items-center gap-3">
-                <div className="w-32 text-xs font-bold text-gray-500 dark:text-gray-400 text-right">Hash(key) →</div>
-                <div className="flex-1 flex items-center gap-2">
+              <div key={key} className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                <div className="w-24 sm:w-32 shrink-0 text-xs font-bold text-gray-500 dark:text-gray-400 sm:text-right">Hash(key) →</div>
+                <div className="flex-1 flex items-center gap-2 min-w-[120px]">
                   <motion.div
                     initial={{ x: -50, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}

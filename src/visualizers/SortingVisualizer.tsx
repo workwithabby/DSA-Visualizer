@@ -343,7 +343,7 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
           </div>
         </div>
 
-        <div className="flex items-end justify-center gap-1.5 h-[200px]">
+        <div className="flex items-end justify-center gap-1 sm:gap-1.5 h-[200px]">
           {displayBars.map((bar, index) => {
             const isHighlighted = currentStep?.highlighted?.includes(index) ?? false;
             const state: ElementState = isHighlighted && currentStep ? currentStep.state : "normal";
@@ -370,17 +370,17 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
                   opacity: 1,
                 }}
                 transition={{ layout: { type: "spring", stiffness: 300, damping: 28 }, scale: { duration: 0.15 } }}
-                className="flex flex-col items-center"
+                className="flex-1 min-w-0 max-w-11 flex flex-col items-center"
               >
                 <motion.div
                   layout
                   animate={{ height: `${Math.max((bar.value / 100) * 165, 20)}px` }}
                   transition={{ layout: { type: "spring", stiffness: 300, damping: 28 } }}
-                  className={`w-11 rounded-t-lg shadow-lg ${stateClass} transition-colors duration-200 flex items-start justify-center pt-2 text-white font-bold`}
+                  className={`w-full rounded-t-lg shadow-lg ${stateClass} transition-colors duration-200 flex items-start justify-center pt-2 text-white font-bold`}
                 >
                   <span className="text-xs">{bar.value}</span>
                 </motion.div>
-                <div className="w-11 h-6 flex items-center justify-center text-xs font-semibold text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-600 mt-1">
+                <div className="w-full h-6 flex items-center justify-center text-xs font-semibold text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-600 mt-1">
                   {index}
                 </div>
               </motion.div>
