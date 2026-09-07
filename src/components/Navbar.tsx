@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -30,8 +31,14 @@ export function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-2.5 font-display font-bold text-lg text-ink">
-              <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-                <span className="text-white text-xs font-mono font-semibold">DS</span>
+              <div className="w-8 h-8 rounded-md overflow-hidden ring-1 ring-rule shrink-0">
+                <Image
+                  src="/DSA-Logo.png"
+                  alt="DSA Visualizer"
+                  width={2000}
+                  height={2000}
+                  className="w-full h-full object-contain"
+                />
               </div>
               <span className="hidden sm:inline">DSA Visualizer</span>
             </Link>

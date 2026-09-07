@@ -25,7 +25,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DSA Visualizer — See How Data Structures & Algorithms Actually Work",
+  title: "DSA Visualizer by Abigail",
   description:
     "An interactive learning tool for Data Structures & Algorithms. Read the concept, watch it happen, and interact with it.",
 };
