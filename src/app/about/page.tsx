@@ -28,14 +28,13 @@ export default function AboutPage() {
             </div>
           </div>
           <p className="text-muted leading-relaxed">
-            DSA Visualizer was created with one simple idea: <strong className="text-ink">algorithms are easier to understand when you can see them work.</strong>
-            Most students struggle with DSA because they read about operations but never see them happen. We bridge that gap by combining
-            clear explanations with interactive, animated visualizations.
+            DSA Visualizer was created with one simple idea: <strong className="text-ink">algorithms are easier to understand when you can see them in action.</strong>
           </p>
           <p className="text-muted leading-relaxed mt-4">
-            Whether you&apos;re a CS student preparing for interviews, an IT student learning fundamentals, or a self-learning programmer,
-            our goal is to make DSA feel approachable — like an interactive playground rather than a textbook.
+            Instead of just reading about data structures and algorithms, you can watch how they work through simple explanations and interactive visualizations.
           </p>
+          <p className="text-muted leading-relaxed mt-4">
+            Whether you're a student or a beginner learning to code, our goal is to make DSA easier, clearer, and more fun to learn.          </p>
         </div>
 
         <div className="card p-8">

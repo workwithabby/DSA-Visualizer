@@ -31,7 +31,7 @@ function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.25 }}
             >
-              Learn the concept. Watch it happen. Interact with it.
+              Learn the concept. See how it works. Interact with it.
             </MotionDiv>
             <MotionDiv
               className="mt-8 flex flex-col sm:flex-row gap-4"
