@@ -171,7 +171,7 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
           <div className="space-y-2">
             {Object.entries(hashMap).map(([key, val]) => (
               <div key={key} className="flex items-center gap-3">
-                <div className="w-32 text-xs font-bold text-gray-400 text-right">Hash(key) →</div>
+                <div className="w-32 text-xs font-bold text-gray-500 dark:text-gray-400 text-right">Hash(key) →</div>
                 <div className="flex-1 flex items-center gap-2">
                   <motion.div
                     initial={{ x: -50, opacity: 0 }}
@@ -183,7 +183,7 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="bg-primary text-white px-4 py-2 rounded-lg font-bold"
+                    className="bg-primary-fill text-white px-4 py-2 rounded-lg font-bold"
                   >
                     {val}
                   </motion.div>
@@ -209,8 +209,8 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
                     whileHover={{ scale: 1.05 }}
                     className={`px-6 py-3 rounded-lg font-bold text-white shadow-md transition-colors ${
                       selectedIndex === index
-                        ? "bg-comparing border-2 border-comparing shadow-comparing/40"
-                        : "bg-gradient-to-b from-primary to-primary-light"
+                        ? "bg-comparing-fill border-2 border-comparing shadow-comparing/40"
+                        : "bg-gradient-to-b from-primary to-primary-light dark:from-primary-fill dark:to-primary-fill"
                     }`}
                   >
                     {item}
@@ -249,12 +249,12 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
                     whileHover={{ scale: 1.05 }}
                     className={`relative px-4 py-3 rounded-lg font-bold text-white shadow-md transition-colors ${
                       selectedIndex === index
-                        ? "bg-comparing border-2 border-comparing shadow-comparing/40"
-                        : "bg-gradient-to-b from-primary to-primary-light"
+                        ? "bg-comparing-fill border-2 border-comparing shadow-comparing/40"
+                        : "bg-gradient-to-b from-primary to-primary-light dark:from-primary-fill dark:to-primary-fill"
                     }`}
                   >
                     {item}
-                    <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[9px] text-gray-400 font-semibold">
+                    <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[9px] text-gray-500 dark:text-gray-400 font-semibold">
                       {index}
                     </span>
                   </motion.div>
@@ -262,20 +262,20 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
               ))}
             </AnimatePresence>
             {items.length === 0 && (
-              <div className="text-gray-400 text-sm">Empty container — add some {structure.replace("-", " ")} elements</div>
+              <div className="text-gray-500 dark:text-gray-400 text-sm">Empty container — add some {structure.replace("-", " ")} elements</div>
             )}
           </div>
         )}
 
         {structure === "queue" && items.length > 0 && (
           <div className="mt-8 flex justify-center gap-8 text-xs font-semibold">
-            <span className="text-green-500">FRONT → {items[0]}</span>
+            <span className="text-green-600 dark:text-green-400">FRONT → {items[0]}</span>
             <span>← BACK {items[items.length - 1]}</span>
           </div>
         )}
         {structure === "deque" && items.length > 0 && (
           <div className="mt-8 flex justify-center gap-8 text-xs font-semibold">
-            <span className="text-green-500">FRONT ← {items[0]}</span>
+            <span className="text-green-600 dark:text-green-400">FRONT ← {items[0]}</span>
             <span>→ BACK {items[items.length - 1]}</span>
           </div>
         )}
@@ -291,21 +291,21 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
             placeholder={structure === "hash-table" ? "Value..." : "Enter value..."}
             className="px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-gray-600 bg-transparent font-mono text-sm focus:border-primary outline-none w-32"
           />
-          <button onClick={handleInsert} className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-dark active:scale-95 transition-all">
+          <button onClick={handleInsert} className="px-4 py-2 bg-primary-fill text-white rounded-lg text-sm font-semibold hover:bg-primary-dark active:scale-95 transition-all">
             {opLabels.insert}
           </button>
-          <button onClick={handleDelete} className="px-4 py-2 bg-error/10 text-error font-semibold rounded-lg text-sm hover:bg-error hover:text-white transition-all active:scale-95">
+          <button onClick={handleDelete} className="px-4 py-2 bg-error/10 text-error font-semibold rounded-lg text-sm hover:bg-error-fill hover:text-white transition-all active:scale-95">
             {opLabels.delete}
           </button>
-          <button onClick={handleClear} className="px-4 py-2 bg-selected/10 text-selected font-semibold rounded-lg text-sm hover:bg-selected hover:text-white transition-all active:scale-95">
+          <button onClick={handleClear} className="px-4 py-2 bg-selected/10 text-selected font-semibold rounded-lg text-sm hover:bg-selected-fill hover:text-white transition-all active:scale-95">
             Clear
           </button>
-          <button onClick={handleRandomize} className="px-4 py-2 bg-accent/10 text-accent font-semibold rounded-lg text-sm hover:bg-accent hover:text-white transition-all active:scale-95">
+          <button onClick={handleRandomize} className="px-4 py-2 bg-accent/10 text-accent font-semibold rounded-lg text-sm hover:bg-accent-fill hover:text-white transition-all active:scale-95">
             Randomize
           </button>
 
           <div className="ml-auto card px-4 py-2 text-sm">
-            <span className="text-gray-400 text-xs mr-2">Last:</span>
+            <span className="text-gray-500 dark:text-gray-400 text-xs mr-2">Last:</span>
             <span className="font-medium">{lastOperation || "—"}</span>
           </div>
         </div>

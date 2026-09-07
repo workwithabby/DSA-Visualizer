@@ -17,7 +17,7 @@ function StructurePreview({ slug }: { slug: string }) {
         <div className="h-full flex items-end gap-1.5">
           {[10, 25, 15, 30, 20].map((v, i) => (
             <div key={i} className="flex flex-col items-center gap-1.5">
-              <div className="w-9 h-8 bg-primary/70 dark:bg-primary-light/70 rounded-sm text-white text-[10px] flex items-center justify-center font-bold">
+              <div className="w-9 h-8 bg-primary-fill/70 rounded-sm text-white text-[10px] flex items-center justify-center font-bold">
                 {v}
               </div>
               <span className="font-mono text-[7px] text-faint leading-none">{i}</span>
@@ -29,7 +29,7 @@ function StructurePreview({ slug }: { slug: string }) {
         <div className="h-full flex items-center gap-1">
           {["A", "B", "C", "D"].map((v, i) => (
             <div key={i} className="flex items-center gap-1">
-              <div className="w-8 h-8 bg-primary/70 dark:bg-primary-light/70 rounded-sm text-white text-[10px] flex items-center justify-center font-bold">
+              <div className="w-8 h-8 bg-primary-fill/70 rounded-sm text-white text-[10px] flex items-center justify-center font-bold">
                 {v}
               </div>
               {i < 3 && <ChevronRight size={14} className="text-primary" />}
@@ -45,7 +45,7 @@ function StructurePreview({ slug }: { slug: string }) {
             {["D", "C", "B", "A"].map((v, i) => (
               <div
                 key={i}
-                className="w-12 h-[15px] bg-primary/70 dark:bg-primary-light/70 rounded-sm text-white text-[8px] flex items-center justify-center font-bold"
+                className="w-12 h-[15px] bg-primary-fill/70 rounded-sm text-white text-[8px] flex items-center justify-center font-bold"
               >
                 {v}
               </div>
@@ -63,7 +63,7 @@ function StructurePreview({ slug }: { slug: string }) {
             {["a", "b", "c", "d", "e"].map((v) => (
               <div
                 key={v}
-                className="w-9 h-6 bg-secondary/70 rounded-sm text-white text-[9px] flex items-center justify-center font-bold"
+                className="w-9 h-6 bg-secondary-fill/70 rounded-sm text-white text-[9px] flex items-center justify-center font-bold"
               >
                 {v}
               </div>
@@ -82,7 +82,7 @@ function StructurePreview({ slug }: { slug: string }) {
             {["a", "b", "c", "d"].map((v) => (
               <div
                 key={v}
-                className="w-9 h-7 bg-secondary/70 rounded-sm text-white text-[9px] flex items-center justify-center font-bold"
+                className="w-9 h-7 bg-secondary-fill/70 rounded-sm text-white text-[9px] flex items-center justify-center font-bold"
               >
                 {v}
               </div>
@@ -114,11 +114,11 @@ function StructurePreview({ slug }: { slug: string }) {
             <line x1={36} y1={42} x2={20} y2={60} stroke="currentColor" strokeWidth="1.2" className="opacity-40" />
             <line x1={36} y1={42} x2={52} y2={60} stroke="currentColor" strokeWidth="1.2" className="opacity-40" />
             {[
-              [60, 18, "12", "fill-primary"],
-              [36, 42, "5", "fill-secondary"],
-              [84, 42, "18", "fill-accent"],
-              [20, 60, "3", "fill-primary"],
-              [52, 60, "8", "fill-secondary"],
+              [60, 18, "12", "fill-primary-fill"],
+              [36, 42, "5", "fill-secondary-fill"],
+              [84, 42, "18", "fill-accent-fill"],
+              [20, 60, "3", "fill-primary-fill"],
+              [52, 60, "8", "fill-secondary-fill"],
             ].map(([cx, cy, label, fill], i) => (
               <g key={i}>
                 <circle cx={cx} cy={cy} r={8} className={fill as string} />
@@ -182,7 +182,7 @@ function StructurePreview({ slug }: { slug: string }) {
                   <span
                     key={i}
                     className={`flex items-center justify-center w-4 h-4 rounded-sm text-[8px] ${
-                      i === word.length - 1 ? "bg-primary text-white dark:bg-primary-light" : "bg-primary/15 text-primary dark:text-primary-light"
+                      i === word.length - 1 ? "bg-primary-fill text-white" : "bg-primary-fill/20 text-primary-fill"
                     }`}
                   >
                     {ch}
@@ -201,11 +201,11 @@ function StructurePreview({ slug }: { slug: string }) {
             ["3", "carol"],
           ].map(([k, v], i) => (
             <div key={i} className="flex items-center gap-1.5">
-              <span className="flex items-center justify-center w-4 h-4 bg-primary/70 dark:bg-primary-light/70 rounded-sm text-white font-bold">
+              <span className="flex items-center justify-center w-4 h-4 bg-primary-fill/70 rounded-sm text-white font-bold">
                 {k}
               </span>
               <span className="text-faint">→</span>
-              <span className="flex items-center justify-center w-14 h-[15px] bg-primary/10 dark:bg-primary-light/10 border border-primary/30 dark:border-primary-light/30 rounded-sm text-primary dark:text-primary-light">
+              <span className="flex items-center justify-center w-14 h-[15px] bg-primary-fill/10 border border-primary-fill/30 rounded-sm text-primary-fill">
                 {v}
               </span>
             </div>

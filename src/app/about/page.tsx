@@ -34,7 +34,7 @@ export default function AboutPage() {
             Instead of just reading about data structures and algorithms, you can watch how they work through simple explanations and interactive visualizations.
           </p>
           <p className="text-muted leading-relaxed mt-4">
-            Whether you're a student or a beginner learning to code, our goal is to make DSA easier, clearer, and more fun to learn.          </p>
+            Whether you&apos;re a student or a beginner learning to code, our goal is to make DSA easier, clearer, and more fun to learn.          </p>
         </div>
 
         <div className="card p-8">

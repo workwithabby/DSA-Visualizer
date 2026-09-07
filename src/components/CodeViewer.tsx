@@ -77,7 +77,7 @@ export function CodeViewer({ codeBlocks, activeLine }: CodeViewerProps) {
               disabled={!available}
               className={`px-3 py-1.5 rounded-md font-mono text-[11px] uppercase tracking-wide transition-colors whitespace-nowrap ${
                 currentLang === lang
-                  ? "bg-primary text-white"
+                  ? "bg-primary-fill text-white"
                   : available
                   ? "text-muted hover:text-ink hover:bg-ink/[0.04]"
                   : "text-faint cursor-not-allowed"

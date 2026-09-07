@@ -26,7 +26,7 @@ export function StepController({
   onSpeedChange,
 }: StepControllerProps) {
   const buttonClass =
-    "p-3 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all duration-200 active:scale-95 disabled:opacity-30 disabled:hover:bg-primary/10 disabled:hover:text-primary";
+    "p-3 rounded-xl bg-primary/10 text-primary hover:bg-primary-fill hover:text-white transition-all duration-200 active:scale-95 disabled:opacity-30 disabled:hover:bg-primary/10 disabled:hover:text-primary";
 
   return (
     <div className="flex flex-col gap-4">
@@ -41,7 +41,7 @@ export function StepController({
           <button
             onClick={onPlayPause}
             className={`p-3.5 rounded-xl text-white font-semibold transition-all duration-200 active:scale-95 shadow-lg ${
-              isPlaying ? "bg-accent hover:bg-amber-500 shadow-accent/30" : "bg-primary hover:bg-primary-dark shadow-primary/30"
+              isPlaying ? "bg-accent-fill hover:bg-error-fill shadow-accent/30" : "bg-primary-fill hover:bg-primary-dark shadow-primary/30"
             }`}
           >
             {isPlaying ? <Pause size={20} /> : <Play size={20} />}
@@ -59,8 +59,8 @@ export function StepController({
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-10">Speed</span>
-        <div className="flex bg-gray-100 dark:bg-gray-700/50 rounded-lg p-1 gap-1 flex-1">
+        <span className="text-xs font-medium text-muted w-10">Speed</span>
+        <div className="flex bg-ink/[0.04] dark:bg-ink/[0.04] rounded-lg p-1 gap-1 flex-1">
           {[
             { label: "Slow", value: 1600 },
             { label: "Normal", value: 800 },
@@ -71,8 +71,8 @@ export function StepController({
               onClick={() => onSpeedChange(opt.value)}
               className={`flex-1 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
                 speed === opt.value
-                  ? "bg-primary text-white shadow"
-                  : "text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
+                  ? "bg-primary-fill text-white shadow"
+                  : "text-muted hover:bg-ink/[0.05]"
               }`}
             >
               {opt.label}

@@ -27,7 +27,7 @@ export function SearchingVisualizer({ algo = "linear", topicSlug }: { algo?: Sea
   const [steps, setSteps] = useState<SearchStep[]>([]);
   const [currentStepIndex, setCurrentStepIndex] = useState(-1);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [speed, setSpeed] = useState(900);
+  const [speed, setSpeed] = useState(800);
   const [inputArr, setInputArr] = useState("");
   const [showWhy, setShowWhy] = useState(false);
 
@@ -244,10 +244,10 @@ export function SearchingVisualizer({ algo = "linear", topicSlug }: { algo?: Sea
             placeholder="Target value"
             className="px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-gray-600 bg-transparent font-mono text-sm focus:border-primary outline-none w-32"
           />
-          <button onClick={handleSearch} className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-dark active:scale-95 transition-all">
+          <button onClick={handleSearch} className="px-4 py-2 bg-primary-fill text-white rounded-lg text-sm font-semibold hover:bg-primary-dark active:scale-95 transition-all">
             Search
           </button>
-          <button onClick={resetData} className="px-4 py-2 bg-accent/10 text-accent font-semibold rounded-lg text-sm hover:bg-accent hover:text-white transition-all active:scale-95">
+          <button onClick={resetData} className="px-4 py-2 bg-accent/10 text-accent font-semibold rounded-lg text-sm hover:bg-accent-fill hover:text-white transition-all active:scale-95">
             Random
           </button>
           <div className="flex gap-2">
@@ -259,7 +259,7 @@ export function SearchingVisualizer({ algo = "linear", topicSlug }: { algo?: Sea
               placeholder={algo === "binary" ? "Sorted: 1,5,8,12,20" : "1,5,8,12,20"}
               className="px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-gray-600 bg-transparent font-mono text-sm focus:border-primary outline-none flex-1 min-w-[180px]"
             />
-            <button onClick={handleCustomArray} className="px-3 py-2 bg-secondary/10 text-secondary font-semibold rounded-lg text-sm hover:bg-secondary hover:text-white transition-all active:scale-95">
+            <button onClick={handleCustomArray} className="px-3 py-2 bg-secondary/10 text-secondary font-semibold rounded-lg text-sm hover:bg-secondary-fill hover:text-white transition-all active:scale-95">
               Set
             </button>
           </div>
@@ -278,14 +278,14 @@ export function SearchingVisualizer({ algo = "linear", topicSlug }: { algo?: Sea
                   animate={{ opacity: 1, y: 0 }}
                   className={`relative w-12 h-14 rounded-lg flex items-center justify-center font-bold text-white shadow-lg transition-all duration-300 ${
                     isFound
-                      ? "bg-success border-2 border-success scale-110 shadow-success/40"
+                      ? "bg-success-fill border-2 border-success scale-110 shadow-success/40"
                       : isHighlighted
-                      ? "bg-comparing border-2 border-comparing scale-110 shadow-comparing/40"
-                      : "bg-gradient-to-b from-primary to-primary-light"
+                      ? "bg-comparing-fill border-2 border-comparing scale-110 shadow-comparing/40"
+                      : "bg-gradient-to-b from-primary to-primary-light dark:from-primary-fill dark:to-primary-fill"
                   }`}
                 >
                   {val}
-                  <span className="absolute -bottom-5 text-[10px] font-semibold text-gray-400">{index}</span>
+                  <span className="absolute -bottom-5 text-[10px] font-semibold text-gray-500 dark:text-gray-400">{index}</span>
                 </motion.div>
               );
             })}
@@ -319,7 +319,7 @@ export function SearchingVisualizer({ algo = "linear", topicSlug }: { algo?: Sea
           {currentStep && (
             <button
               onClick={() => setShowWhy(!showWhy)}
-              className="text-xs flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all font-medium"
+              className="text-xs flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary-fill hover:text-white transition-all font-medium"
             >
               Why did it do that?
             </button>
@@ -342,7 +342,7 @@ export function SearchingVisualizer({ algo = "linear", topicSlug }: { algo?: Sea
             )}
           </div>
         ) : (
-          <div className="text-center py-8 text-gray-400">
+          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
             <p className="text-lg">Enter a target value or press <span className="font-bold text-primary">Play</span></p>
             <p className="text-sm mt-1">{algo === "linear" ? "Linear search checks each element one by one" : "Binary search halves the search space each step"}</p>
           </div>

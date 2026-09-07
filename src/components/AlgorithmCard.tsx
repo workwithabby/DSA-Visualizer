@@ -128,9 +128,9 @@ function AlgorithmPreview({ slug }: { slug: string }) {
             ))}
           </div>
           <div className="flex gap-1.5 font-mono text-[7px] leading-none text-white">
-            <span className="px-1 py-0.5 rounded-sm bg-primary/70 dark:bg-primary-light/70">lo</span>
-            <span className="px-1 py-0.5 rounded-sm bg-accent">mid</span>
-            <span className="px-1 py-0.5 rounded-sm bg-primary/70 dark:bg-primary-light/70">hi</span>
+            <span className="px-1 py-0.5 rounded-sm bg-primary-fill/70">lo</span>
+            <span className="px-1 py-0.5 rounded-sm bg-accent-fill">mid</span>
+            <span className="px-1 py-0.5 rounded-sm bg-primary-fill/70">hi</span>
           </div>
         </div>
       )}

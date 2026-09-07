@@ -350,14 +350,14 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
 
             const stateClass =
               state === "comparing"
-                ? "bg-comparing border-2 border-comparing shadow-comparing/40"
+                ? "bg-comparing-fill border-2 border-comparing shadow-comparing/40"
                 : state === "swapping"
-                ? "bg-moving border-2 border-moving shadow-moving/40"
+                ? "bg-moving-fill border-2 border-moving shadow-moving/40"
                 : state === "sorted"
-                ? "bg-success border-2 border-success shadow-success/40"
+                ? "bg-success-fill border-2 border-success shadow-success/40"
                 : state === "selected"
-                ? "bg-selected border-2 border-selected shadow-selected/40"
-                : "bg-gradient-to-t from-primary to-primary-light border-2 border-primary-dark/50";
+                ? "bg-selected-fill border-2 border-selected shadow-selected/40"
+                : "bg-gradient-to-t from-primary to-primary-light dark:from-primary-fill dark:to-primary-fill border-2 border-primary-dark/50";
 
             return (
               <motion.div
@@ -414,10 +414,10 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
             placeholder="Add value..."
             className="px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-gray-600 bg-transparent font-mono text-sm focus:border-primary outline-none w-32"
           />
-          <button onClick={handleAddValue} className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-dark active:scale-95 transition-all">
+          <button onClick={handleAddValue} className="px-4 py-2 bg-primary-fill text-white rounded-lg text-sm font-semibold hover:bg-primary-dark active:scale-95 transition-all">
             Add
           </button>
-          <button onClick={handleRandom} className="px-4 py-2 bg-accent/10 text-accent font-semibold rounded-lg text-sm hover:bg-accent hover:text-white transition-all active:scale-95">
+          <button onClick={handleRandom} className="px-4 py-2 bg-accent/10 text-accent font-semibold rounded-lg text-sm hover:bg-accent-fill hover:text-white transition-all active:scale-95">
             Randomize
           </button>
           <button
@@ -425,11 +425,11 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
               startSort([64, 34, 25, 12, 22, 11, 90]);
               if (topicSlug) markStarted(topicSlug);
             }}
-            className="px-4 py-2 bg-secondary/10 text-secondary font-semibold rounded-lg text-sm hover:bg-secondary hover:text-white transition-all active:scale-95"
+            className="px-4 py-2 bg-secondary/10 text-secondary font-semibold rounded-lg text-sm hover:bg-secondary-fill hover:text-white transition-all active:scale-95"
           >
             Example Data
           </button>
-          <button onClick={handleRestart} className="px-4 py-2 bg-error/10 text-error font-semibold rounded-lg text-sm hover:bg-error hover:text-white transition-all active:scale-95">
+          <button onClick={handleRestart} className="px-4 py-2 bg-error/10 text-error font-semibold rounded-lg text-sm hover:bg-error-fill hover:text-white transition-all active:scale-95">
             Reset
           </button>
         </div>
@@ -455,7 +455,7 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
           {currentStep && (
             <button
               onClick={() => setShowWhy(!showWhy)}
-              className="text-xs flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all font-medium"
+              className="text-xs flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary-fill hover:text-white transition-all font-medium"
             >
               Why did it do that?
             </button>
@@ -478,7 +478,7 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
             )}
           </div>
         ) : (
-          <div className="text-center py-8 text-gray-400">
+          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
             <p className="text-lg">Press <span className="font-bold text-primary">Play</span> to start the visualization</p>
             <p className="text-sm mt-1">Or randomize your data and watch the algorithm sort it step by step</p>
           </div>
