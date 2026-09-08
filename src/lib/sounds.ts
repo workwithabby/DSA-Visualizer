@@ -1,5 +1,7 @@
 let audioContext: AudioContext | null = null;
 
+const MASTER_VOLUME = 0.5;
+
 function getAudioContext() {
   if (typeof window === "undefined") return null;
   if (!audioContext) {
@@ -21,7 +23,7 @@ function playTone(frequency: number, duration: number, type: OscillatorType = "s
   oscillator.type = type;
   oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
 
-  gainNode.gain.setValueAtTime(volume, ctx.currentTime);
+  gainNode.gain.setValueAtTime(volume * MASTER_VOLUME, ctx.currentTime);
   gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
 
   oscillator.start(ctx.currentTime);
