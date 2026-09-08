@@ -36,10 +36,6 @@ function makeBar(value: number): Bar {
   return { id: `bar-${idCounter++}-${value}-${Math.random().toString(36).slice(2, 7)}`, value };
 }
 
-function toBars(values: number[]): Bar[] {
-  return values.map((v) => makeBar(v));
-}
-
 export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVisualizerProps) {
   const [bars, setBars] = useState<Bar[]>([]);
   const [steps, setSteps] = useState<SortStep[]>([]);
@@ -806,15 +802,6 @@ export function SortingVisualizer({ algorithm = "bubble", topicSlug }: SortingVi
           </button>
           <button onClick={handleRandom} className="px-4 py-2 bg-accent/10 text-accent font-semibold rounded-lg text-sm hover:bg-accent-fill hover:text-white transition-all active:scale-95">
             Randomize
-          </button>
-          <button
-            onClick={() => {
-              startSort(toBars([64, 34, 25, 12, 22, 11, 90]));
-              if (topicSlug) markStarted(topicSlug);
-            }}
-            className="px-4 py-2 bg-secondary/10 text-secondary font-semibold rounded-lg text-sm hover:bg-secondary-fill hover:text-white transition-all active:scale-95"
-          >
-            Example Data
           </button>
           <button onClick={handleRestart} className="px-4 py-2 bg-error/10 text-error font-semibold rounded-lg text-sm hover:bg-error-fill hover:text-white transition-all active:scale-95">
             Reset

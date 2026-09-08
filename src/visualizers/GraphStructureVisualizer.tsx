@@ -95,6 +95,13 @@ export function GraphStructureVisualizer({ topicSlug }: GraphVisualizerProps) {
     if (topicSlug) markStarted(topicSlug);
   };
 
+  const removeNode = (id: string) => {
+    setNodes((prev) => prev.filter((n) => n.id !== id));
+    setEdges((prev) => prev.filter((e) => e.from !== id && e.to !== id));
+    setLastOperation(`Removed vertex "${id}" and its incident edges`);
+    playSound(sounds.delete);
+  };
+
   const randomize = () => {
     const n = 5 + Math.floor(Math.random() * 3);
     const newNodes: GNode[] = Array.from({ length: n }, (_, i) => ({
@@ -116,13 +123,6 @@ export function GraphStructureVisualizer({ topicSlug }: GraphVisualizerProps) {
     setLastOperation(`Randomized graph with ${n} vertices and ${newEdges.length} edges`);
     playSound(sounds.insert);
     if (topicSlug) markStarted(topicSlug);
-  };
-
-  const removeNode = (id: string) => {
-    setNodes((prev) => prev.filter((n) => n.id !== id));
-    setEdges((prev) => prev.filter((e) => e.from !== id && e.to !== id));
-    setLastOperation(`Removed vertex "${id}" and its incident edges`);
-    playSound(sounds.delete);
   };
 
   const width = 420;

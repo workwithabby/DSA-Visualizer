@@ -346,34 +346,6 @@ export function TreeVisualizer({ mode, topicSlug }: TreeVisualizerProps) {
     setHighlighted(getNodeIdByValue(nodes[id]?.value ?? -1));
   };
 
-  const generateSample = () => {
-    if (mode === "binary-search-tree") {
-      setNodes({
-        50: { value: 50, left: 30, right: 70, parent: null },
-        30: { value: 30, left: 20, right: 40, parent: 50 },
-        70: { value: 70, left: 60, right: 80, parent: 50 },
-        20: { value: 20, left: null, right: null, parent: 30 },
-        40: { value: 40, left: null, right: null, parent: 30 },
-        60: { value: 60, left: null, right: null, parent: 70 },
-        80: { value: 80, left: null, right: null, parent: 70 },
-      });
-    } else {
-      setNodes({
-        1: { value: 10, left: 2, right: 3, parent: null },
-        2: { value: 20, left: 4, right: 5, parent: 1 },
-        3: { value: 30, left: 6, right: 7, parent: 1 },
-        4: { value: 40, left: null, right: null, parent: 2 },
-        5: { value: 50, left: null, right: null, parent: 2 },
-        6: { value: 60, left: null, right: null, parent: 3 },
-        7: { value: 70, left: null, right: null, parent: 3 },
-      });
-    }
-    setLastOperation("Loaded sample tree");
-    setHighlighted(null);
-    playSound(sounds.insert);
-    if (topicSlug) markStarted(topicSlug);
-  };
-
   const root = getRoot();
   const layout = computeLayout(nodes, root);
 
@@ -520,12 +492,6 @@ export function TreeVisualizer({ mode, topicSlug }: TreeVisualizerProps) {
             className="px-4 py-2 bg-error/10 text-error font-semibold rounded-lg text-sm hover:bg-error-fill hover:text-white transition-all active:scale-95"
           >
             Delete Selected
-          </button>
-          <button
-            onClick={generateSample}
-            className="px-4 py-2 bg-accent/10 text-accent font-semibold rounded-lg text-sm hover:bg-accent-fill hover:text-white transition-all active:scale-95"
-          >
-            Sample Tree
           </button>
 
           <div className="ml-auto card px-4 py-2 text-sm">
