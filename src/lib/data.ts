@@ -23,8 +23,8 @@ export const dataStructures: DataStructure[] = [
     description:
       "A linked list is a sequence of elements where each element (node) points to the next one. Unlike arrays, elements are not stored next to each other in memory. It's like a treasure hunt — each clue tells you where the next one is.",
     shortDescription: "A sequence of nodes where each node points to the next node in memory.",
-    operations: ["Insert at Head", "Insert at Tail", "Delete", "Search", "Traverse"],
-    timeComplexity: { access: "O(n)", search: "O(n)", insert: "O(1)", delete: "O(1)" },
+    operations: ["Insert at Head", "Delete at Tail", "Search", "Traverse"],
+    timeComplexity: { access: "O(n)", search: "O(n)", insert: "O(1) at head", delete: "O(n) at tail" },
     advantages: ["Dynamic size", "Efficient insertions/deletions", "No wasted memory"],
     disadvantages: ["No random access", "Extra memory for pointers", "Not cache friendly"],
     useCases: ["Implementation of stacks/queues", "Music playlists", "Undo functionality", "Memory management"],
@@ -91,10 +91,10 @@ export const dataStructures: DataStructure[] = [
     category: "Non-Linear",
     difficulty: "Intermediate",
     description:
-      "A BST is a binary tree where the left child is smaller than the parent and the right child is larger. This ordering makes searching very efficient — at each step, you can eliminate half the remaining elements.",
+      "A BST is a binary tree where the left child is smaller than the parent and the right child is larger. In a balanced tree, this ordering makes searching efficient because each comparison chooses one subtree; an unbalanced tree can degrade to linear time.",
     shortDescription: "A sorted binary tree where left children are smaller and right children are larger.",
     operations: ["Insert", "Delete", "Search", "Find Min/Max"],
-    timeComplexity: { access: "O(log n)", search: "O(log n)", insert: "O(log n)", delete: "O(log n)" },
+    timeComplexity: { access: "O(log n) average, O(n) worst", search: "O(log n) average, O(n) worst", insert: "O(log n) average, O(n) worst", delete: "O(log n) average, O(n) worst" },
     advantages: ["Efficient search", "Ordered data", "Flexible size"],
     disadvantages: ["Can become unbalanced", "No guaranteed O(log n)", "Complex deletion"],
     useCases: ["Database indexing", "File system organization", "Expression trees", "Dictionary implementation"],
@@ -282,7 +282,7 @@ export const algorithms: Algorithm[] = [
       "Quick sort selects a 'pivot' element and partitions the array around it — elements smaller than the pivot go left, larger go right. Then recursively sorts the partitions. Very fast in practice.",
     shortDescription: "Pick a pivot, partition elements around it, then recursively sort the partitions.",
     timeComplexity: { best: "O(n log n)", average: "O(n log n)", worst: "O(n²)" },
-    spaceComplexity: "O(log n)",
+    spaceComplexity: "O(log n) average, O(n) worst",
     useCases: ["General-purpose sorting", "In-memory sorting", "When average performance matters"],
     steps: [
       { description: "Choose a pivot element", explanation: "Select an element as the pivot (e.g., last element, first, median, or random).", whyDidItDoThat: "The pivot divides the array. A good pivot choice leads to balanced partitions.", codeLine: 0 },
