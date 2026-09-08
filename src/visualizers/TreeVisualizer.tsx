@@ -154,32 +154,29 @@ export function TreeVisualizer({ mode, topicSlug }: TreeVisualizerProps) {
       const allIds = Object.keys(nodes).map(Number);
       const newId = (allIds.length > 0 ? Math.max(...allIds) : 0) + 1;
       const root = getRoot();
-      const seen = new Set<number>();
       let parentId: number | null = null;
       let side: "left" | "right" | null = null;
 
-      function findSpot(parent: number): boolean {
-        if (seen.has(parent)) return false;
-        seen.add(parent);
-        if (nodes[parent].left === null) {
-          parentId = parent;
-          side = "left";
-          return true;
+      function findSpotLevelOrder(start: number): void {
+        const queue = [start];
+        while (queue.length > 0 && parentId === null) {
+          const parent = queue.shift()!;
+          if (nodes[parent].left === null) {
+            parentId = parent;
+            side = "left";
+            return;
+          }
+          if (nodes[parent].right === null) {
+            parentId = parent;
+            side = "right";
+            return;
+          }
+          queue.push(nodes[parent].left, nodes[parent].right);
         }
-        if (nodes[parent].right === null) {
-          parentId = parent;
-          side = "right";
-          return true;
-        }
-        const left = nodes[parent].left;
-        if (left !== null && findSpot(left)) return true;
-        const right = nodes[parent].right;
-        if (right !== null && findSpot(right)) return true;
-        return false;
       }
 
       if (root !== null) {
-        findSpot(root);
+        findSpotLevelOrder(root);
       }
 
       if (parentId === null || side === null) {
@@ -333,8 +330,12 @@ export function TreeVisualizer({ mode, topicSlug }: TreeVisualizerProps) {
         newNodes[id] = { ...newNodes[id], value: successorNode.value, left: newNodes[id].left, right: newNodes[id].right };
         if (successorNode.parent !== null && newNodes[successorNode.parent]) {
           const parent = newNodes[successorNode.parent];
-          if (parent.left === successor) parent.left = null;
-          if (parent.right === successor) parent.right = null;
+          const successorRight = successorNode.right;
+          if (parent.left === successor) parent.left = successorRight;
+          if (parent.right === successor) parent.right = successorRight;
+          if (successorRight !== null) newNodes[successorRight].parent = successorNode.parent;
+        } else if (successorNode.right !== null) {
+          newNodes[successorNode.right].parent = null;
         }
         delete newNodes[successor];
         setNodes(newNodes);

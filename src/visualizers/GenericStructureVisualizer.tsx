@@ -100,7 +100,11 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
       const keys = Object.keys(hashMap);
       if (keys.length === 0) return;
       const keyToDelete = hashDeleteKey.trim();
-      const targetKey = keyToDelete && hashMap[keyToDelete] !== undefined ? keyToDelete : keys[keys.length - 1];
+      if (keyToDelete && !Object.prototype.hasOwnProperty.call(hashMap, keyToDelete)) {
+        setLastOperation(`Key "${keyToDelete}" not found`);
+        return;
+      }
+      const targetKey = keyToDelete || keys[keys.length - 1];
       const rest: Record<string, number> = {};
       Object.keys(hashMap).forEach((k) => {
         if (k !== targetKey) rest[k] = hashMap[k];
@@ -186,7 +190,7 @@ export function GenericStructureVisualizer({ structure, topicSlug }: GenericStru
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-bold text-lg capitalize">{structure.replace("-", " ")} Visualizer</h3>
           <div className="text-sm text-gray-500 dark:text-gray-400">
-            Elements: <span className="font-bold">{items.length}</span>
+            Elements: <span className="font-bold">{structure === "hash-table" ? Object.keys(hashMap).length : items.length}</span>
           </div>
         </div>
 

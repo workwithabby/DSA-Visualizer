@@ -103,7 +103,11 @@ export function TrieVisualizer({ topicSlug }: TrieVisualizerProps) {
   const insertWord = () => {
     const word = inputWord.trim().toLowerCase();
     if (!word) return;
-    const newRoot = { children: { ...trie.children }, isEnd: trie.isEnd };
+    const clone = (node: TrieNode): TrieNode => ({
+      children: Object.fromEntries(Object.entries(node.children).map(([key, child]) => [key, clone(child)])),
+      isEnd: node.isEnd,
+    });
+    const newRoot = clone(trie);
     let node = newRoot;
     const path: string[] = [];
     for (const c of word) {
